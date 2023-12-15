@@ -1,0 +1,69 @@
+import regex as re
+from collections import defaultdict
+import functools
+import math
+
+file = '8/test.txt'
+
+file = '8/in.txt'
+
+
+nodes = {}
+
+class node:
+    name = ""
+    left = ""
+    right = ""
+
+instructions = ""
+
+starts = []
+
+with open(file, 'r') as f:
+    lines = f.readlines()
+
+    instructions = lines[0].strip()
+
+    for line in lines[2:]:
+        matches = re.findall('([0-9A-Z]+) = \(([0-9A-Z]+), ([0-9A-Z]+)\)', line)
+        n = node()
+        n.left = matches[0][1]
+        n.right = matches[0][2]
+        n.name = matches[0][0]
+        nodes[n.name] = n
+        if n.name[2] == "A":
+            starts.append(n.name)
+
+curNode = "AAA"
+curInstruction = 0
+
+count = 0
+while curNode != "ZZZ":
+    if instructions[curInstruction] == 'L':
+        curNode = nodes[curNode].left
+    elif instructions[curInstruction] == 'R':
+        curNode = nodes[curNode].right
+    count +=1
+    curInstruction = (curInstruction + 1 ) % len(instructions)
+
+count2 = 1
+for node in starts:
+    curCount = 0
+    curNode = node
+    curInstruction = 0
+    while curNode[2] != 'Z':
+        if instructions[curInstruction] == 'L':
+            curNode = nodes[curNode].left
+        elif instructions[curInstruction] == 'R':
+            curNode = nodes[curNode].right
+        curCount += 1 
+        curInstruction = (curInstruction + 1 ) % len(instructions)
+    
+    count2 = math.lcm(count2, curCount)
+
+print(count2)
+print(count)
+
+    
+
+
